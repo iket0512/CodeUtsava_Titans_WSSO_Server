@@ -21,12 +21,13 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from posts.views import *
+from data.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^home/', test),
     url(r'^map/', test_map),
-
+    url(r'^populate/', populate),
 ]
 
 
