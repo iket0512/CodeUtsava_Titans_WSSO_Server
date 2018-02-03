@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from models import *
 from django.http import JsonResponse
-from test_data import data_list1, data_list2
+from test_data import data_list1, data_list2, element_data
 # Create your views here.
 from decimal import Decimal
 import requests, json, multiprocessing as mp
@@ -11,18 +11,20 @@ SUCCESS = {
 }
 
 
-def api_call(url, habitation, village):
+def api_call(url, habitation):
 	response = requests.get(url)
 	# print response.status_code
 	data = json.loads(response.text)
 	if data['status'] != 'ZERO_RESULTS':
-		# print data
-		# print url
 		location =  data['results'][0]['geometry']['location']
-		print location
+		latitude = location['lat']
+		longitude = location['lng']
+		habitation.latitude = latitude
+		habitation.longitude = longitude
+		habitation.save()
 		# print habitation, village
 
-def cal_location(habitation):
+def get_location(habitation):
 	key = 'AIzaSyCzLoN1PtGXixi9lw9dBk5AKoa1FkfiDlM'
 	village = habitation.village
 	panchayat = village.panchayat
@@ -32,14 +34,10 @@ def cal_location(habitation):
 	# address = "%s+%s+%s+%s+%s"%(habitation.name, village.name, panchayat.name, block.name, district.name)
 	address = "%s+%s"%(panchayat.name, district.name)
 
-	# print address
 	url = 'https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s'
 	url = url%(address, key)
-	p = mp.Process(target = api_call, args = (url, habitation.name, village.name))
+	p = mp.Process(target = api_call, args = (url, habitation))
 	p.start()
-	# p.join()
-	# quit()
-
 
 def load(data_list):
 	keys = ['state', 'district', 'block', 'panchayat', 'village', 'habitation', 'element', 'count']
@@ -59,7 +57,7 @@ def load(data_list):
 		village, village_created = VillageData.objects.get_or_create(panchayat = panchayat, name = village)
 		habitation, habitation_created = HabitationData.objects.get_or_create(village = village, name = habitation)
 		if habitation_created :
-			# cal_location_of(habitation)
+			get_location(habitation)
 			pass
 		element = ElementData.objects.get(name = element)
 		HabitationElementData.objects.create(habitation = habitation, element = element, count = count)
@@ -67,9 +65,13 @@ def load(data_list):
 
 
 def populate(request):
-	# load(data_list1)
-	# load(data_list2)
-	for habitation in HabitationData.objects.all():
-		cal_location(habitation)
+	for element in element_data:
+		ElementData.objects.get_or_create(name = element['name'],
+			hazards = element['hazards'],
+			remedy = element['remedy'],
+			permissible_limit_low = element['permissible_limit_low'],
+			permissible_limit_high = element['permissible_limit_high'])
+	load(data_list1)
+	load(data_list2)
 
 	return JsonResponse(SUCCESS)
