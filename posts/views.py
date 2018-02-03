@@ -22,10 +22,10 @@ def get_habitation_data():
 		tmp['alert_level'] = 0
 		for element in ElementData.objects.all():
 			tmp_tmp = {}
-			# print "thisthis", today_date
-			# print habitation.name, habitation.village.name
-			# print element
-			habitationElement, created = HabitationElementData.objects.get_or_create(created__date = today_date,
+			print "thisthis", today_date
+			print habitation.name, habitation.village.name, habitation.village.panchayat.name, habitation.village.panchayat.block.name, habitation.village.panchayat.block.district.name
+			print element
+			habitationElement = HabitationElementData.objects.get(created__date = today_date,
 				habitation = habitation,
 				element = element)
 			tmp_tmp['name'] = element.name
