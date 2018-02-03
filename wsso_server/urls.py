@@ -21,7 +21,7 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from data.views import populate
-from posts.views import pointers, test, test_map
+from posts.views import pointers, test, test_map, trigger_post
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^map/', test_map),
     url(r'^populate/', populate),
     url(r'^pointers/', pointers),
+    url(r'^trigger_post/', trigger_post),
 ]
 
 

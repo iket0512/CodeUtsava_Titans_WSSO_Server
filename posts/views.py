@@ -57,10 +57,11 @@ def get_habitation_data():
 
 	return data	
 
-# def trigger_posts():
-# 	habitation_data = get_habitation_data()
-# 	for habitation in habitation_data():
-# 		if habitation['alert_level'] > 0
+def trigger_post():
+	habitation_data = get_habitation_data()
+	for habitation in habitation_data():
+		if habitation['alert_level'] > 0:
+			pass
 
 def pointers(request):
 	response = {}
