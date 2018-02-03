@@ -14,3 +14,7 @@ def test(request):
 @csrf_exempt
 def test_map(request):
     return render(request,"containers/maps.html")
+
+@csrf_exempt
+def test_post_comment(request):
+    return render(request,"containers/post_insight.html")

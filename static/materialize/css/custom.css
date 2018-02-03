@@ -1,4 +1,4 @@
-#main{top:100px; padding-left:200px  }
+#main{top:80px; padding-left: 250px}
 .nav-headers{
     font-size: 18px;
 }
@@ -180,4 +180,8 @@
     padding: 4px 0px;
     line-height: 1;
     font-size: 12px;
+}
+.comment{
+    padding : 10px;
+    margin: 0px
 }

@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^home/', test),
     url(r'^map/', test_map),
     url(r'^populate/', populate),
+    url(r'^post_comment/', test_post_comment),   
 ]
 
 
