@@ -57,10 +57,11 @@ def get_habitation_data():
 
 	return data	
 
-# def trigger_posts():
-# 	habitation_data = get_habitation_data()
-# 	for habitation in habitation_data():
-# 		if habitation['alert_level'] > 0
+def trigger_post():
+	habitation_data = get_habitation_data()
+	for habitation in habitation_data():
+		if habitation['alert_level'] > 0:
+			pass
 
 def pointers(request):
 	response = {}
@@ -73,14 +74,13 @@ def pointers(request):
 			filtered_data.append(points)
 	response['data']=filtered_data
 
-	return JsonResponse(response)
+	return filtered_data
 
 def test(request):
 	return render(request,"containers/home.html")
 
 def test_map(request):
-	data= get_habitation_data()
-	print data
+	data= pointers(request)
 	context= {
 		"data" : data
 	}

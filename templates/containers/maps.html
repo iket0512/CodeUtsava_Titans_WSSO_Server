@@ -51,6 +51,7 @@
 	<!-- END HEADER -->
 
 	<!-- START MAIN -->
+	{%include "elements/sidebar.html"%}
 	<div id="map" style="width: 100%"></div>
 	<script>
 		function initMap() {		
@@ -61,30 +62,31 @@
 			lat_center=long_center=0;
 			var content=[];
 			{%for list in data %}
+				lat_center = lat_center + {{list.latitude}};
+				long_center = long_center+ {{list.longitude}};
 				content[{{forloop.counter}}]= {%include "elements/marker.html"%};
 				i={{forloop.counter}};
 			{% endfor %}
-			console.log(lat_center,long_center,i);
 			lat_center=lat_center/i;
 			long_center=long_center/i;
+			console.log(lat_center,long_center,i);
 
 			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 10,
-				center: {lat: 21.2514, lng: 81.6296},
+				zoom: 9,
+				center: {lat: lat_center, lng: long_center},
 			});
 
 			// var contentString = {%include "elements/marker.html"%};
 			var marker=[] ;
 			var infowindow = new google.maps.InfoWindow();
 
-			{%for list in data %}
+			{%for item in data %}
 				var contentString = content[{{forloop.counter}}];
-				console.log('{{list.address}}');
-				console.log({{ list.latitude }},{{ list.longitude }});
+				console.log({{ item.latitude }},{{ item.longitude }});
 				infowindow.close();
 
 				marker = new google.maps.Marker({
-					position: { lat : {{ list.latitude }} , lng : {{ list.longitude }} },
+					position: { lat : {{ item.latitude }} , lng : {{ item.longitude }} },
 					map: map,
 					title:''
 				});
