@@ -38,7 +38,6 @@ class HabitationData(models.Model):
 	village = models.ForeignKey(VillageData)
 	latitude = models.DecimalField(max_digits = 15, decimal_places = 8, default = 0)
 	longitude = models.DecimalField(max_digits = 15, decimal_places = 8, default = 0)
-
 	def __unicode__(self):
 		return str(self.name)
 

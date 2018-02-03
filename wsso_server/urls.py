@@ -14,14 +14,23 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+from django.conf import settings			
+from django.conf.urls.static import static
+
 from django.conf.urls import url
 from django.contrib import admin
 
 from data.views import populate
-from posts.views import pointers
+from posts.views import pointers, test, test_map
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^home/', test),
+    url(r'^map/', test_map),
     url(r'^populate/', populate),
     url(r'^pointers/', pointers),
 ]
+
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

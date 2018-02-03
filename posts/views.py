@@ -68,3 +68,9 @@ def pointers(request):
 	response['data'] = get_habitation_data()
 
 	return JsonResponse(response)
+
+def test(request):
+    return render(request,"containers/home.html")
+
+def test_map(request):
+    return render(request,"containers/maps.html")
