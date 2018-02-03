@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz
 from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
-
+from decimal import Decimal
 def today():
 	return make_aware(datetime.now())
 
@@ -65,7 +65,13 @@ def get_habitation_data():
 def pointers(request):
 	response = {}
 	response['success'] = True
-	response['data'] = get_habitation_data()
+	data = get_habitation_data()
+	filtered_data = []
+	i = 0
+	for points in data:
+		if(points['latitude'] != Decimal(0)):
+			filtered_data.append(points)
+	response['data']=filtered_data
 
 	return JsonResponse(response)
 
