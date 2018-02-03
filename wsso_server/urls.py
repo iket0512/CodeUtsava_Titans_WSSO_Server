@@ -17,6 +17,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from data.views import populate
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^populate/', populate),
 ]
