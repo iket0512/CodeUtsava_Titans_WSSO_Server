@@ -18,8 +18,10 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from data.views import populate
+from posts.views import pointers
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^populate/', populate),
+    url(r'^pointers/', pointers),
 ]
