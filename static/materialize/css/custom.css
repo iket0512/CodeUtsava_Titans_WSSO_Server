@@ -161,7 +161,24 @@
     margin: 0px;
 }
 
-#circle {
+#circle0 {
+    width: 15px;
+    height: 15px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    background: green;
+}
+
+#circle1 {
+    width: 15px;
+    height: 15px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    background: yellow;
+}
+#circle2 {
     width: 15px;
     height: 15px;
     -webkit-border-radius: 25px;
@@ -183,5 +200,6 @@
 }
 .comment{
     padding : 10px;
-    margin: 0px
+    margin: 0px;
+
 }

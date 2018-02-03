@@ -45,8 +45,8 @@ class ElementData(models.Model):
 	name = models.CharField(max_length = 254)
 	hazards = models.CharField(max_length = 255, null = True, blank = True)
 	remedy = models.CharField(max_length = 255, null = True, blank = True)
-	permissible_limit_low = models.DecimalField(default = 0, max_digits = 5, decimal_places = 2)
-	permissible_limit_high = models.DecimalField(default = 0, max_digits = 5, decimal_places = 2)	
+	permissible_limit_low = models.DecimalField(default = 0, max_digits = 8, decimal_places = 2)
+	permissible_limit_high = models.DecimalField(default = 0, max_digits = 8, decimal_places = 2)	
 	def __unicode__(self):
 		return str(self.name)
 

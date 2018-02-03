@@ -20,8 +20,8 @@ from django.conf.urls.static import static
 from django.conf.urls import url
 from django.contrib import admin
 
-from posts.views import *
-from data.views import *
+from data.views import populate
+from posts.views import pointers, test, test_map, test_post_comment
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^map/', test_map),
     url(r'^populate/', populate),
     url(r'^post_comment/', test_post_comment),   
+    url(r'^pointers/', pointers),
 ]
 
 

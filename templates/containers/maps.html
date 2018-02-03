@@ -53,46 +53,38 @@
 	<!-- START MAIN -->
 	<div id="map" style="width: 100%"></div>
 	<script>
-		function initMap() {
-			var data ;
-			var m1 = {lat: 21.2514, lng: 81.6296};
-			var m2 = {lat: 23.259933, lng: 77.412613};
-			var m3 = {lat: 21.1458, lng: 79.0882};
-			var m4 = {lat: 21.1938, lng: 81.3509};
-			var m5 = {lat: 34.083656, lng: 74.797371};
-		
-			var marker_arr={{ data|tojson }};
+		function initMap() {		
+			var marker_arr;
+			// console.log(marker_arr.latitude);
 
-			var lat_center,long_center;
+			var lat_center,long_center,i;
 			lat_center=long_center=0;
-			for (i in marker_arr) {
-				lat_center=lat_center + marker_arr[i].latitude;
-				long_center=long_center + marker_arr[i].longitude;
-			}
-
-			lat_center=lat_center/marker_arr.length;
-			long_center=long_center/marker_arr.length;
-			
-			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 10,
-				center: {lat: lat_center, lng: long_center},
-			});
-
 			var content=[];
-
 			{%for list in data %}
 				content[{{forloop.counter}}]= {%include "elements/marker.html"%};
+				i={{forloop.counter}};
 			{% endfor %}
+			console.log(lat_center,long_center,i);
+			lat_center=lat_center/i;
+			long_center=long_center/i;
+
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 10,
+				center: {lat: 21.2514, lng: 81.6296},
+			});
 
 			// var contentString = {%include "elements/marker.html"%};
 			var marker=[] ;
 			var infowindow = new google.maps.InfoWindow();
 
-			for (var i = 0; i < marker_arr.length; i++) {
-				var contentString = content[i];
+			{%for list in data %}
+				var contentString = content[{{forloop.counter}}];
+				console.log('{{list.address}}');
+				console.log({{ list.latitude }},{{ list.longitude }});
 				infowindow.close();
+
 				marker = new google.maps.Marker({
-					position: {marker_arr[i].latitude,marker_arr[i].longitude},
+					position: { lat : {{ list.latitude }} , lng : {{ list.longitude }} },
 					map: map,
 					title:''
 				});
@@ -104,7 +96,7 @@
 					infowindow.open(map,marker);
 					};
 				})(marker,contentString,infowindow)); 
-			}
+			{% endfor %}
 		}
 	</script>
 
