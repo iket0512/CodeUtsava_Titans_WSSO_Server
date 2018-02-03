@@ -11,37 +11,37 @@ class StateData(models.Model):
 
 class DistrictData(models.Model):
 	name =models.CharField(max_length=100)
-	state = models.ForeignKey(StateData,db_column='name')
+	state = models.ForeignKey(StateData)
 	def __unicode__(self):
 		return self.name
 
 class BlockData(models.Model):
 	name =models.CharField(max_length=100)
-	district = models.ForeignKey(DistrictData,db_column='name')
+	district = models.ForeignKey(DistrictData)
 	def __unicode__(self):
 		return self.name
 
 class PanchayatData(models.Model):
 	name =models.CharField(max_length=100)
-	block = models.ForeignKey(BlockData,db_column='name')
+	block = models.ForeignKey(BlockData)
 	def __unicode__(self):
 		return self.name
 
 class VillageData(models.Model):
 	name =models.CharField(max_length=100)
-	panchayat = models.ForeignKey(PanchayatData,db_column='name')
+	panchayat = models.ForeignKey(PanchayatData)
 	def __unicode__(self):
 		return self.name
 
 class HabitationData(models.Model):
 	name =models.CharField(max_length=100)
-	village = models.ForeignKey(VillageData,db_column='name')
+	village = models.ForeignKey(VillageData)
 
 	def __unicode__(self):
 		return self.name
 
 class HabitationElementData(models.Model):
-	habitation= models.ForeignKey(HabitationData,db_column='name')
+	habitation= models.ForeignKey(HabitationData)
 	as_actual= models.FloatField(default=0)
 	fe_actual= models.FloatField(default=0)
 	f_actual= models.FloatField(default=0)
