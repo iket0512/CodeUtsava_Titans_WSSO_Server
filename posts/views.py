@@ -198,7 +198,13 @@ def get_post_id(request, id):
 	response['uid'] = post.uid
 	response['status'] = post.status
 	response['data'] = post.data
-	return JsonResponse(response)
+
+	for element in response['data']['elements']:
+		element_obj = ElementData.objects.get(name = element['name'])
+		element['hazards'] = element_obj.hazards
+		element['remedies'] = element_obj.remedy
+
+	return render(request, "containers/post_insight.html", response)
 
 def get_habitation(request, id):
 	response = {}
