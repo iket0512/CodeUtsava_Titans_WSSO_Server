@@ -38,23 +38,25 @@
 								</div>		
 							{% endfor %}							
 						</div>
-						<div class="row center" id="element_row">
-								<ul>
-							{% for element in data.elements %}
-								{% if element.alert_level > 0 %}
-								<li>
-									{{element.name}}<br>
-									<ul>
-										<li>Hazards: {{element.hazards}}<br></li>
-										<li>Remedies: {{element.remedies}}<br></li>
-									</ul>
-								</li>
-								{% endif %}
-							{% endfor %}
-							</ul>
-
-							<div class="col s2 m2 l2 center">
-							</div>							
+						<div class="row" id="element_row">
+							<ul>
+								{% for element in data.elements %}
+									{% if element.alert_level > 0 %}
+									<li><h4><b>{{element.name}}</b></h4>
+										<ul>
+											<li class="card-title">
+												Hazards:<br> 
+											</li>
+												<p align="justify">{{element.hazards}}</p>
+											<li class="card-title">
+												Remedies:<br> 
+											</li>
+												<p align="justify">{{element.remedies}}</p>
+										</ul>
+									</li>
+									{% endif %}
+								{% endfor %}
+							</ul>							
 						</div>
 					</div>				
 					<div class="divider"></div>
