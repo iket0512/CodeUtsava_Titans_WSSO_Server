@@ -10,11 +10,21 @@
 					</div>
 					<div  class="col s10 m10 l10 grey lighten-4">
 						<div class="section" id="item_post_name">
-							<h5>Habitation Name</h5>
+							<script type="text/javascript">
+								$(document).ready(function() {
+									
+									var data='{{data.address}}';
+									data=data.split(',')[0];
+									$("#habitation{{data.hid}}").text(data);
+
+								});
+							</script>
+							<h5 id="habitation{{data.hid}}">
+							</h5>
 						</div>
 						<div class="divider"></div>
 						<div>
-							<h6>Village Name | Panchayat Name | Block Name | City Name | State Name</h6>
+							<h6>{{data.address}}</h6>
 						</div>
 						<div class="row center" id="element_row">
 							<div class="col s2 m2 l2 center element_row" >
@@ -36,6 +46,24 @@
 							<div class="col s2 m2 l2 center">
 								<img src="/media/iron.png" height="50px"><br>
 								<h7>Threat Level 1.2 </h7>
+							</div>							
+						</div>
+						<div class="row center" id="element_row">
+								<ul>
+							{% for element in data.elements %}
+								{% if element.threat_level > 0 %}
+								<li>
+									{{element.name}}<br>
+									<ul>
+										<li>Hazards: {{element.hazards}}<br></li>
+										<li>Remedies: {{element.remedies}}<br></li>
+									</ul>
+								</li>
+								{% endif %}
+							{% endfor %}
+							</ul>
+
+							<div class="col s2 m2 l2 center">
 							</div>							
 						</div>
 					</div>				
