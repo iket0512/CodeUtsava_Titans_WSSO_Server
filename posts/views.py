@@ -65,7 +65,7 @@ def get_habitation_data():
 	return data	
 
 template_1 = """<html><body><br><h3>Respected Sir/Ma'am</h3><br><h5><p>
-We would like it to bring it to your notice that the water constituents of handpump located at %s is currently unsafe for drinking. Kindly visit the link- %s for more information.</p>
+We would like it to bring it to your notice that the water constituents of handpump located at %s is currently unsafe for drinking. Kindly visit the <a href="%s">link</a> for more information.</p>
 <p>Considering the safety of public, we hope that the matter will be resolved soon.</p>
 <p>Details:<br>
 <ol>
@@ -104,7 +104,8 @@ def notify(post, habitation_json):
 			element_obj = ElementData.objects.get(name = element['name'])
 			details = details + element_detail%(element['name'], element_obj.hazards, element_obj.remedy)
 
-	content_email = template_1%(habitation_json['address'], post.id, details)
+	link = "http://172.16.20.190:8000/post/" + str(post.id)
+	content_email = template_1%(habitation_json['address'], link, details)
 
 	if len(emails) > 0:
 		emails = emails[0]
@@ -121,7 +122,7 @@ def notify(post, habitation_json):
 		url_sms = 'http://api.msg91.com/api/sendhttp.php?authkey=' + authkey + '&mobiles='
 		print url_sms
 		url_sms = url_sms + str(mobile)
-		url_sms = url_sms + '&message=' + sms%(habitation.name, post.id) + '%0A'
+		url_sms = url_sms + '&message=' + sms%(habitation.name, link) + '%0A'
 		url_sms = url_sms + '&sender=' + 'MYWSSO' + '&route=4'
 		print url_sms
 		global sent
@@ -182,3 +183,11 @@ def test(request):
 
 def test_map(request):
     return render(request,"containers/maps.html")
+
+def get_post_id(request, id):
+	post = PostsData.objects.get(id = int(id))
+	response = {}
+	response['uid'] = post.uid
+	response['status'] = post.status
+	response['data'] = post.data
+	return JsonResponse(response)
