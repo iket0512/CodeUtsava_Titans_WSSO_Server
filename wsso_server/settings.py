@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'data',
+    'posts'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -131,3 +132,9 @@ STATICFILES_DIRS = [
    os.path.join(BASE_DIR, "static/"),
    # '/var/www/static/',
 ]
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'iket.ag24@gmail.com'
+EMAIL_HOST_PASSWORD = 'codeutsava'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

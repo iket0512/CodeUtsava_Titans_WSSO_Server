@@ -24,7 +24,6 @@
 				$('.modal').modal();
 
 				$(".button-collapse").sideNav();
-
 			});
 
 		</script>
@@ -44,9 +43,14 @@
 		<!-- END HEADER -->
 
 		<!-- START MAIN -->
-		<div id="main">
+		<div id="main center">
 			<div class="wrapper">
-				{%include "elements/sidebar.html"%}
+				
+				<!-- START LEFT SIDEBAR NAV-->
+<!-- 				{%include "elements/sidebar.html"%} -->
+				<!-- END LEFT SIDEBAR NAV-->
+
+                <!-- START CONTENT -->
 				<section id="content"   style="margin-top: -5px; overflow:hidden;">
 					<div class="container" id="main_container" style="width: 100%">
 						{%include "containers/item_post.html"%}
@@ -54,6 +58,9 @@
 				</section>	
 			</div>
 		</div>
+
+
+
 
 		<!--Import jQuery before materialize.js-->
 

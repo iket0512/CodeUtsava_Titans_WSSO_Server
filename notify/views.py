@@ -41,7 +41,7 @@ def sendMail(request):
 	    'Threat in HandPump',
 	    'Here is the message.',
 	    'iket.ag24@gmail.com',
-	    email,
+	    email,c
 	    fail_silently=True,
 	    html_message=temp_html,
 	    )

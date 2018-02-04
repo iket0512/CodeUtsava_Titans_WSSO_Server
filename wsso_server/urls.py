@@ -21,18 +21,16 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from data.views import populate
-
-from posts.views import pointers, test, test_map, trigger_post, test_post_comment
-
+from posts.views import pointers, test, test_map, trigger_post,get_posts
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^home/', test),
     url(r'^map/', test_map),
     url(r'^populate/', populate),
-    url(r'^post_comment/', test_post_comment),   
     url(r'^pointers/', pointers),
     url(r'^trigger_post/', trigger_post),
+    url(r'^get_posts/', get_posts),
 ]
 
 
