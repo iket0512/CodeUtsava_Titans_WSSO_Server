@@ -5,39 +5,39 @@
 				<div class="row">
 					<div class="col s2 m2 l2 center teal">
 						<div class="card-image">
+						{% if item.data.alert_level == 2 %}
 							<img src="/media/two1.png" height="160px" >
+						{% else %}
+							<img src="/media/one.png" height="160px" >
+						{% endif%}
 							<a href="/post_comment" class="center white-text">Details</a>
 						</div>
 					</div>
 					<div  class="col s10 m10 l10">
 						<div class="section" id="item_post_name">
-							<h5>Habitation Name</h5>
+							<script type="text/javascript">
+								$(document).ready(function() {
+									
+									var data = '{{item.data.address}}';
+									var adr = data.split(',')[0];
+									$("#habitation{{item.data.hid}}").text(adr);
+									$("#addr{{item.data.hid}}").text(data);
+
+								});
+							</script>
+							<h5 id="habitation{{item.data.hid}}"></h5>
 						</div>
 						<div class="divider"></div>
 						<div>
-							<h6>Village Name | Panchayat Name | Block Name | City Name | State Name</h6>
+							<h6 id="addr{{item.data.hid}}">Village Name | Panchayat Name | Block Name | City Name | State Name</h6>
 						</div>
 						<div class="row center" id="element_row">
-							<div class="col s2 m2 l2 center element_row" >
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>							
+							{% for o in item.data.elements%}
+								<div class="col s2 m2 l2 center element_row" >
+									<img src="/media/{{o.name}}.png" height="50px"><br>
+									<h7>{{o.name}}<br>{{o.count}}/{{o.limit}}</h7>
+								</div>		
+							{% endfor %}				
 						</div>
 					</div>
 				</div>	

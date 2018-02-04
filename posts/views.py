@@ -224,19 +224,19 @@ def get_habitation(request, id):
 	for hed in HabitationElementData.objects.filter(habitation = habitation):
 		if hed.element.name == "Iron":
 			Fex.append(hed.created)
-			Fey.append(hed.count)
+			Fey.append(float(hed.count))
 		if hed.element.name == "Arsenic":
 			Asx.append(hed.created)
-			Asy.append(hed.count)
+			Asy.append(float(hed.count))
 		if hed.element.name == "Fluoride":
 			Fx.append(hed.created)
-			Fy.append(hed.count)
+			Fy.append(float(hed.count))
 		if hed.element.name == "Nitrate":
 			Nx.append(hed.created)
-			Ny.append(hed.count)
+			Ny.append(float(hed.count))
 		if hed.element.name == "Salinity":
 			Sx.append(hed.created)
-			Sy.append(hed.count)
+			Sy.append(float(hed.count))
 
 	response['Feg'] = plot([Scatter(x=Fex, y=Fey)],auto_open=False,output_type='div')
 	response['Asg'] = plot([Scatter(x=Asx, y=Asy)],auto_open=False,output_type='div')
@@ -245,3 +245,8 @@ def get_habitation(request, id):
 	response['Ng'] = plot([Scatter(x=Nx, y=Ny)],auto_open=False,output_type='div')
 
 	print response
+
+	context ={
+		"data" :response
+	}
+	return render(request,"containers/graphs.html",context)
