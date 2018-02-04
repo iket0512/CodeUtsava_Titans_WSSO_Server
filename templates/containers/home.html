@@ -49,7 +49,9 @@
 				{%include "elements/sidebar.html"%}
 				<section id="content"   style="margin-top: -5px; overflow:hidden;">
 					<div class="container" id="main_container" style="width: 100%">
-						{%include "containers/item_post.html"%}
+						{% for item in data%}
+							{%include "containers/item_post.html"%}
+						{% endfor %}
 					</div>
 				</section>	
 			</div>
