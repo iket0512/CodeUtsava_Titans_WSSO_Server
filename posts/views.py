@@ -9,6 +9,9 @@ from decimal import Decimal
 from .models import PostsData
 from django.core.mail import send_mail
 
+from plotly.offline import plot
+from plotly.graph_objs import Bar, Scatter, Figure, Layout
+
 sent = False
 esent = False
 
@@ -191,3 +194,49 @@ def get_post_id(request, id):
 	response['status'] = post.status
 	response['data'] = post.data
 	return JsonResponse(response)
+
+def get_habitation(request, id):
+	response = {}
+	habitation = HabitationData.objects.get(id = int(id))
+	village = habitation.village
+	panchayat = village.panchayat
+	block = panchayat.block
+	response['address'] = "%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, block.district.name, block.district.state.name)
+	response['latitude'] = habitation.latitude
+	response['longitude'] = habitation.longitude
+	# response['graph']={
+	Fex=[]
+	Fey=[]
+	Asx=[]
+	Asy=[]
+	Fx=[]
+	Fy=[]
+	Sx=[]
+	Sy=[]
+	Nx=[]
+	Ny=[]
+	# }
+	for hed in HabitationElementData.objects.filter(habitation = habitation):
+		if hed.element.name == "Iron":
+			Fex.append(hed.created)
+			Fey.append(hed.count)
+		if hed.element.name == "Arsenic":
+			Asx.append(hed.created)
+			Asy.append(hed.count)
+		if hed.element.name == "Fluoride":
+			Fx.append(hed.created)
+			Fy.append(hed.count)
+		if hed.element.name == "Nitrate":
+			Nx.append(hed.created)
+			Ny.append(hed.count)
+		if hed.element.name == "Salinity":
+			Sx.append(hed.created)
+			Sy.append(hed.count)
+
+	response['Feg'] = plot([Scatter(x=Fex, y=Fey)],auto_open=False,output_type='div')
+	response['Asg'] = plot([Scatter(x=Asx, y=Asy)],auto_open=False,output_type='div')
+	response['Fg'] = plot([Scatter(x=Fx, y=Fy)],auto_open=False,output_type='div')
+	response['Sg'] = plot([Scatter(x=Sx, y=Sy)],auto_open=False,output_type='div')
+	response['Ng'] = plot([Scatter(x=Nx, y=Ny)],auto_open=False,output_type='div')
+
+	print response
