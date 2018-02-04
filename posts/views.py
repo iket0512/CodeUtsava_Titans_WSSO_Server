@@ -144,7 +144,7 @@ def get_posts(request):
 	response['data'] = []
 	for posts in PostsData.objects.all():
 		tmp = {}
-		tmp['id'] = posts.uid
+		tmp['id'] = posts.id
 		tmp['data'] = posts.data
 		response['data'].append(tmp)
 
@@ -256,3 +256,12 @@ def get_habitation(request, id):
 		"data" :response
 	}
 	return render(request,"containers/graphs.html",context)
+
+def get_mobileposts(request):
+	response = {}
+	response['value'] = []
+	for posts in PostsData.objects.all():
+		response['value'].append(posts.data)
+
+	print "zzxx", response
+	return JsonResponse(response)

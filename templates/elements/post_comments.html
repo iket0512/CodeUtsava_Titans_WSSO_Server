@@ -5,7 +5,11 @@
 				<div class="row teal lighten-1" >
 					<div class="col s2 m2 l2 center">
 						<div class="card-image">
-							<img src="/media/two1.png" height="150px" >
+						{% if data.alert_level == 2 %}
+							<img src="/media/two1.png" height="160px" >
+						{% else %}
+							<img src="/media/one.png" height="160px" >
+						{% endif%}
 						</div>
 					</div>
 					<div  class="col s10 m10 l10 grey lighten-4">
@@ -27,31 +31,17 @@
 							<h6>{{data.address}}</h6>
 						</div>
 						<div class="row center" id="element_row">
-							<div class="col s2 m2 l2 center element_row" >
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>
-							<div class="col s2 m2 l2 center">
-								<img src="/media/iron.png" height="50px"><br>
-								<h7>Threat Level 1.2 </h7>
-							</div>							
+							{% for o in data.elements%}
+								<div class="col s2 m2 l2 center element_row" >
+									<img src="/media/{{o.name}}.png" height="50px"><br>
+									<h7>{{o.name}}<br>{{o.count}}/{{o.limit}}</h7>
+								</div>		
+							{% endfor %}							
 						</div>
 						<div class="row center" id="element_row">
 								<ul>
 							{% for element in data.elements %}
-								{% if element.threat_level > 0 %}
+								{% if element.alert_level > 0 %}
 								<li>
 									{{element.name}}<br>
 									<ul>
