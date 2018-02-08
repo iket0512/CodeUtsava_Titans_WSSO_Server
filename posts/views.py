@@ -34,8 +34,7 @@ def get_habitation_data():
 			print "thisthis", today_date
 			print habitation.name, habitation.village.name, habitation.village.panchayat.name, habitation.village.panchayat.block.name, habitation.village.panchayat.block.district.name
 			print element
-			habitationElement = HabitationElementData.objects.get(created__date = today_date,
-				habitation = habitation,
+			habitationElement = HabitationElementData.objects.get(habitation = habitation,
 				element = element)
 			tmp_tmp['name'] = element.name
 			tmp_tmp['count'] = habitationElement.count
@@ -265,3 +264,19 @@ def get_mobileposts(request):
 
 	print "zzxx", response
 	return JsonResponse(response)
+
+
+def get_hazards_remedies(request):
+	response=[]
+	element_obj = ElementData.objects.all()
+	for element in element_obj:
+		temp={}
+		temp['name']= element.name
+		temp['hazards'] = element.hazards
+		temp['remedies'] = element.remedy
+		response.append(temp)
+	context={
+		"data" :response
+	}
+
+	return render(request,"containers/hazards_remedies.html",context)

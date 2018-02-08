@@ -1,4 +1,4 @@
-#main{top:80px; padding-left: 250px}
+#main{top:100px; padding-left: 250px}
 #left-sidebar-nav{position:fixed;width:100px;left:180px;z-index:999;height:auto}
 .nav-headers{
     font-size: 18px;
@@ -203,4 +203,11 @@
     padding : 10px;
     margin: 0px;
 
+}
+.foreground-color{
+    color: #0d0221
+}
+
+.background-color1{
+    background-color: #001021;
 }
