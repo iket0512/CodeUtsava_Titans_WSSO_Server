@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 
 from plotly.offline import plot
 from plotly.graph_objs import Bar, Scatter, Figure, Layout
+from datetime import datetime
 
 sent = False
 esent = False
@@ -23,49 +24,55 @@ def make_aware(time):
 	return timezone.localize(time)
 
 def get_habitation_data():
-	data = []
+	print datetime.now()
+	data = {}
 	today_date = today().date()
-	for habitation in HabitationData.objects.all():
+
+	for habitationElement in HabitationElementData.objects.all().exclude(habitation__latitude = Decimal(0)):
+		heid = habitationElement.habitation.id
+		try:
+			data[heid]
+			# print data[heid]['elements'][0]
+		except:
+			data[heid] = {}
+			data[heid]['elements'] = []
+			data[heid]['alert_level'] = 0
+
+			habitation = habitationElement.habitation
+			village = habitation.village
+			panchayat = village.panchayat
+			block = panchayat.block
+			district = block.district
+			state = district.state
+			
+			data[heid]['hid'] = heid
+			data[heid]['address'] = "%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
+			data[heid]['latitude'] = habitation.latitude
+			data[heid]['longitude'] = habitation.longitude
+
 		tmp = {}
-		tmp['elements'] = []
-		tmp['alert_level'] = 0
-		for element in ElementData.objects.all():
-			tmp_tmp = {}
-			print "thisthis", today_date
-			print habitation.name, habitation.village.name, habitation.village.panchayat.name, habitation.village.panchayat.block.name, habitation.village.panchayat.block.district.name
-			print element
-			habitationElement = HabitationElementData.objects.get(created__date = today_date,
-				habitation = habitation,
-				element = element)
-			tmp_tmp['name'] = element.name
-			tmp_tmp['count'] = habitationElement.count
-			tmp_tmp['limit'] = element.permissible_limit_high
-			alert_level = 0
-			if(habitationElement.count >= element.permissible_limit_low):
-				alert_level = 1
-			if(habitationElement.count >= element.permissible_limit_high):
-				alert_level = 2
+		alert_level = 0
+		if(habitationElement.count >= habitationElement.element.permissible_limit_low):
+			alert_level = 1
+		if(habitationElement.count >= habitationElement.element.permissible_limit_high):
+			alert_level = 2
 
-			if alert_level > tmp['alert_level']:
-				tmp['alert_level'] = alert_level
+		if alert_level > data[heid]['alert_level']:
+			data[heid]['alert_level'] = alert_level
+		tmp['alert_level'] = alert_level
 
-			tmp_tmp['alert_level'] = alert_level
-			# tmp_tmp['hazards'] = element.hazards
-			# tmp_tmp['remedy'] = element.remedy
-			tmp['elements'].append(tmp_tmp)
+		tmp['name'] = habitationElement.element.name
+		tmp['count'] = habitationElement.count
+		tmp['limit'] = habitationElement.element.permissible_limit_high
+		data[heid]['elements'].append(tmp)
 
-		village = habitation.village
-		panchayat = village.panchayat
-		block = panchayat.block
-		district = block.district
-		state = district.state
-		tmp['hid'] = habitation.id
-		tmp['address'] = "%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
-		tmp['latitude'] = habitation.latitude
-		tmp['longitude'] = habitation.longitude
-		data.append(tmp)
-
-	return data	
+	print datetime.now()
+	final = []
+	for x,y in data.iteritems():
+		final.append(y)
+	print datetime.now()
+	print final[:2]
+	return final
 
 template_1 = """<html><body><br><h3>Respected Sir/Ma'am</h3><br><h5><p>
 We would like it to bring it to your notice that the water constituents of handpump located at %s is currently unsafe for drinking. Kindly visit the <a href="%s">link</a> for more information.</p>
@@ -250,7 +257,7 @@ def get_habitation(request, id):
 	response['Sg'] = plot([Scatter(x=Sx, y=Sy)],auto_open=False,output_type='div')
 	response['Ng'] = plot([Scatter(x=Nx, y=Ny)],auto_open=False,output_type='div')
 
-	print response
+	# print response
 
 	context ={
 		"data" :response

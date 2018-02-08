@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from models import *
 from django.http import JsonResponse
-from test_data import data_list2, element_data
+from test_data import load_data, element_data
 # Create your views here.
 from decimal import Decimal
 import requests, json, multiprocessing as mp
@@ -10,26 +10,31 @@ import pytz
 from django.utils.dateparse import parse_datetime
 import time
 
+from django import db
+
 SUCCESS = {
 	"success":True
 }
 
 
 def api_call(url, habitation):
+
 	response = requests.get(url)
 	# print response.status_code
 	data = json.loads(response.text)
 	if data['status'] != 'ZERO_RESULTS':
+		print data
 		location =  data['results'][0]['geometry']['location']
 		latitude = location['lat']
 		longitude = location['lng']
+		print latitude, longitude
 		habitation.latitude = latitude
 		habitation.longitude = longitude
 		habitation.save()
 		# print habitation, village
 
 def get_location(habitation):
-	key = 'AIzaSyCzLoN1PtGXixi9lw9dBk5AKoa1FkfiDlM'
+	key = 'AIzaSyBiDPRoTGjbRV5j32_Gay-DpmecHMHOtlQ'
 	village = habitation.village
 	panchayat = village.panchayat
 	block = panchayat.block
@@ -41,7 +46,8 @@ def get_location(habitation):
 	url = 'https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s'
 	url = url%(address, key)
 	p = mp.Process(target = api_call, args = (url, habitation))
-	time.sleep(1)
+	time.sleep(.3)
+	db.connections.close_all()
 	p.start()
 
 def today():
@@ -86,13 +92,14 @@ def load(data_list):
 
 
 def populate(request):
-	for element in element_data:
-		ElementData.objects.get_or_create(name = element['name'],
-			hazards = element['hazards'],
-			remedy = element['remedy'],
-			permissible_limit_low = element['permissible_limit_low'],
-			permissible_limit_high = element['permissible_limit_high'])
-	load(data_list2)
+	# for element in element_data:
+	# 	print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
+	# 	ElementData.objects.get_or_create(name = element['name'],
+	# 		hazards = element['hazards'],
+	# 		remedy = element['remedy'],
+	# 		permissible_limit_low = element['permissible_limit_low'],
+	# 		permissible_limit_high = element['permissible_limit_high'])
+	# load(load_data())
 
 	for habitation in HabitationData.objects.all():
 		get_location(habitation)
