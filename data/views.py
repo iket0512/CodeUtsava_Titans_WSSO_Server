@@ -102,7 +102,7 @@ def populate(request):
 			permissible_limit_high = element['permissible_limit_high'])
 	load(load_data())
 
-	for habitation in HabitationData.objects.all():
+	for habitation in HabitationData.objects.filter(latitude = Decimal(0)):
 		get_location(habitation)
 
 	return JsonResponse(SUCCESS)
