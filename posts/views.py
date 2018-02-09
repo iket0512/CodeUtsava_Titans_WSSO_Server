@@ -33,7 +33,7 @@ def get_habitation_data():
 		try:
 			data[heid]
 			# print data[heid]['elements'][0]
-		except:
+		except Exception as e:
 			data[heid] = {}
 			data[heid]['elements'] = []
 			data[heid]['alert_level'] = 0

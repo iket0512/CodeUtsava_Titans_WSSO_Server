@@ -85,8 +85,11 @@
 				console.log({{ item.latitude }},{{ item.longitude }});
 				infowindow.close();
 
+				var latit = {{ item.latitude }} + (Math.random() -.5) / 1500;
+				var longi = {{ item.longitude }} + (Math.random() -.5) / 1500;
+
 				marker = new google.maps.Marker({
-					position: { lat : {{ item.latitude }} , lng : {{ item.longitude }} },
+					position: { lat : latit , lng : longi },
 					map: map,
 					title:''
 				});
