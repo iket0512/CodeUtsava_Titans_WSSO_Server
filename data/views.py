@@ -93,14 +93,14 @@ def load(data_list):
 
 
 def populate(request):
-	# for element in element_data:
-	# 	print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
-	# 	ElementData.objects.get_or_create(name = element['name'],
-	# 		hazards = element['hazards'],
-	# 		remedy = element['remedy'],
-	# 		permissible_limit_low = element['permissible_limit_low'],
-	# 		permissible_limit_high = element['permissible_limit_high'])
-	# load(load_data())
+	for element in element_data:
+		print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
+		ElementData.objects.get_or_create(name = element['name'],
+			hazards = element['hazards'],
+			remedy = element['remedy'],
+			permissible_limit_low = element['permissible_limit_low'],
+			permissible_limit_high = element['permissible_limit_high'])
+	load(load_data())
 
 	for habitation in HabitationData.objects.all():
 		get_location(habitation)
