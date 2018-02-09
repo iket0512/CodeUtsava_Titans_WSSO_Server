@@ -34,7 +34,8 @@ def api_call(url, habitation):
 		# print habitation, village
 
 def get_location(habitation):
-	key = 'AIzaSyBiDPRoTGjbRV5j32_Gay-DpmecHMHOtlQ'
+	# key = 'AIzaSyBiDPRoTGjbRV5j32_Gay-DpmecHMHOtlQ'
+	key = 'AIzaSyBChR60QLOog6P9RufBRcf39-BAfCa6Q5E' 
 	village = habitation.village
 	panchayat = village.panchayat
 	block = panchayat.block
