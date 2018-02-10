@@ -54,4 +54,77 @@ class Migration(migrations.Migration):
                 ('habitation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='data.HabitationData')),
             ],
         ),
+        migrations.RunSQL(
+            """
+                create view posts_extendedhabitationelementsdata as
+                    select
+                        row_number() OVER () as id,
+                        habitation_id,
+                        max(village_id) as village_id,
+                        max(latitude) as latitude,
+                        max(longitude) as longitude,
+                        max(f_l) as f_l,
+                        max(as_l) as as_l,
+                        max(fe_l) as fe_l,
+                        max(n_l) as n_l,
+                        max(s_l) as s_l,
+                        max(f_al) as f_al,
+                        max(as_al) as as_al,
+                        max(fe_al) as fe_al,
+                        max(n_al) as n_al,
+                        max(s_al) as s_al,
+                        max(f_count) as f_count,
+                        max(fe_count) as fe_count,
+                        max(as_count) as as_count,
+                        max(n_count) as n_count,
+                        max(s_count) as s_count,
+                        max(created) as created
+                    from (
+                        select h.name as hname,
+                        h.id habitation_id,
+                        h.latitude as latitude,
+                        h.longitude as longitude,
+                        h.village_id as village_id,
+                        ef.permissible_limit_high as f_l, 
+                        eas.permissible_limit_high as as_l,
+                        efe.permissible_limit_high as fe_l,
+                        en.permissible_limit_high as n_l,
+                        es.permissible_limit_high as s_l,
+                        hed.created as created,
+                        case when hed.element_id = ef.id then hed.count end as f_count,
+                        case when hed.element_id = efe.id then hed.count end as fe_count,
+                        case when hed.element_id = eas.id then hed.count end as as_count,
+                        case when hed.element_id = en.id then hed.count end as n_count,
+                        case when hed.element_id = es.id then hed.count end as s_count,
+                        case when hed.element_id = ef.id and hed.count >= ef.permissible_limit_high then 2 else
+                        case when hed.element_id = ef.id and hed.count >= ef.permissible_limit_low then 1 else 0
+                            end
+                        end as f_al,
+                        case when hed.element_id = eas.id and hed.count >= eas.permissible_limit_high then 2 else
+                            case when hed.element_id = eas.id and hed.count >= eas.permissible_limit_low then 1 else 0
+                            end
+                        end as as_al,
+                        case when hed.element_id = efe.id and hed.count >= efe.permissible_limit_high then 2 else
+                            case when hed.element_id = efe.id and hed.count >= efe.permissible_limit_low then 1 else 0
+                            end
+                        end as fe_al,
+                        case when hed.element_id = en.id and hed.count >= en.permissible_limit_high then 2 else
+                            case when hed.element_id = en.id and hed.count >= en.permissible_limit_low then 1 else 0
+                            end
+                        end as n_al,
+                        case when hed.element_id = es.id and hed.count >= es.permissible_limit_high then 2 else
+                            case when hed.element_id = es.id and hed.count >= es.permissible_limit_low then 1 else 0
+                            end
+                        end as s_al
+                        from data_habitationdata as h
+                        left join data_habitationelementdata as hed on h.id = hed.habitation_id 
+                        left join data_elementdata as ef on hed.element_id = ef.id and ef.name = 'Fluoride'
+                        left join data_elementdata as eas on hed.element_id = eas.id and eas.name = 'Arsenic'
+                        left join data_elementdata as efe on hed.element_id = efe.id and efe.name = 'Iron'
+                        left join data_elementdata as en on hed.element_id = en.id and en.name = 'Nitrate'
+                        left join data_elementdata as es on hed.element_id = es.id and es.name = 'Salinity'
+                    ) as tmp group by habitation_id;
+            """
+            )
+
     ]
