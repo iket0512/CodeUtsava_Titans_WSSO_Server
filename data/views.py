@@ -95,15 +95,15 @@ def load(data_list):
 
 
 def populate(request):
-	# if(ElementData.objects.all().count() == 0):
-	# 	for element in element_data:
-	# 		print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
-	# 		ElementData.objects.get_or_create(name = element['name'],
-	# 			hazards = element['hazards'],
-	# 			remedy = element['remedy'],
-	# 			permissible_limit_low = element['permissible_limit_low'],
-	# 			permissible_limit_high = element['permissible_limit_high'])
-	# load(load_data())
+	if(ElementData.objects.all().count() == 0):
+		for element in element_data:
+			print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
+			ElementData.objects.get_or_create(name = element['name'],
+				hazards = element['hazards'],
+				remedy = element['remedy'],
+				permissible_limit_low = element['permissible_limit_low'],
+				permissible_limit_high = element['permissible_limit_high'])
+	load(load_data())
 
 	for habitation in HabitationData.objects.filter(latitude = Decimal(0)):
 		get_location(habitation)

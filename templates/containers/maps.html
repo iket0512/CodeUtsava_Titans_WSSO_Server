@@ -31,7 +31,6 @@
 			#map {
 			height:90%;
 			top: 5px;
-			margin: 5px;
 			}
 			html, body {
 				height: 100%;
@@ -77,9 +76,6 @@
 			long_center=long_center/i;
 			// console.log(lat_center,long_center,i);
 
-			lat_center=lat_center/marker_arr.length;
-			long_center=long_center/marker_arr.length;
-			
 			var map = new google.maps.Map(document.getElementById('map'), {
 				zoom: 9,
 				center: {lat: lat_center, lng: long_center},
@@ -87,7 +83,6 @@
 
 			// var contentString = {%include "elements/marker.html"%};
 			var marker=[] ;
-			
 			var infowindow = new google.maps.InfoWindow();
 
 			{%for item in data %}
@@ -129,7 +124,4 @@
 	</script>
 
 	</body>
-
-
-
 </html>
