@@ -35,7 +35,7 @@ def api_call(url, habitation):
 
 def get_location(habitation):
 	# key = 'AIzaSyBiDPRoTGjbRV5j32_Gay-DpmecHMHOtlQ'
-	key = 'AIzaSyCyRP0ET9kScNDxWF8MmtqdOaQf7TzEsvc' 
+	key = 'AIzaSyCoLsnvBscqwzBtlhCJFtTu3rTKHlBzPpY'
 	village = habitation.village
 	panchayat = village.panchayat
 	block = panchayat.block
@@ -47,12 +47,12 @@ def get_location(habitation):
 	url = 'https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s'
 	url = url%(address, key)
 	p = mp.Process(target = api_call, args = (url, habitation))
-	time.sleep(.3)
+	time.sleep(.1)
 	db.connections.close_all()
 	p.start()
 
 def today():
-	return make_aware(datetime.now())
+	return make_aware(datetime.now()).date()
 
 def make_aware(time):
 	timezone = pytz.timezone('Asia/Kolkata')
@@ -80,12 +80,14 @@ def load(data_list):
 		# 	get_location(habitation)
 		# 	pass
 		
-		for element_this in ElementData.objects.all():
-			H,c = HabitationElementData.objects.get_or_create(habitation = habitation, element = element_this, created__date = today().date())
+		
+		if habitation_created:
+			for element_this in ElementData.objects.all():
+				H,c = HabitationElementData.objects.get_or_create(habitation = habitation, element = element_this, created= today())
 			# print H,c
 		print "xxxxxxxxxxxxxxxxx",element
 		element = ElementData.objects.get(name = element)
-		HE = HabitationElementData.objects.get(habitation = habitation, element = element, created__date = today().date())
+		HE = HabitationElementData.objects.get(habitation = habitation, element = element, created = today())
 		# print count
 		HE.count = count
 		HE.save()
@@ -93,14 +95,15 @@ def load(data_list):
 
 
 def populate(request):
-	for element in element_data:
-		print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
-		ElementData.objects.get_or_create(name = element['name'],
-			hazards = element['hazards'],
-			remedy = element['remedy'],
-			permissible_limit_low = element['permissible_limit_low'],
-			permissible_limit_high = element['permissible_limit_high'])
-	load(load_data())
+	if(ElementData.objects.all().count() == 0):
+		for element in element_data:
+			print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
+			ElementData.objects.get_or_create(name = element['name'],
+				hazards = element['hazards'],
+				remedy = element['remedy'],
+				permissible_limit_low = element['permissible_limit_low'],
+				permissible_limit_high = element['permissible_limit_high'])
+	# load(load_data())
 
 	for habitation in HabitationData.objects.filter(latitude = Decimal(0)):
 		get_location(habitation)

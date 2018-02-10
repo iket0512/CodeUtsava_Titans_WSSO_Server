@@ -54,7 +54,7 @@ class HabitationElementData(models.Model):
 	habitation = models.ForeignKey(HabitationData)
 	element = models.ForeignKey(ElementData)
 	count = models.DecimalField(default = 0, decimal_places = 2, max_digits = 5)
-	created = models.DateTimeField(auto_now = False, auto_now_add = True)
+	created = models.DateField()
 	def __unicode__(self):
 		return str(self.habitation)
 

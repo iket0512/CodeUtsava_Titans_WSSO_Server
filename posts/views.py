@@ -6,7 +6,7 @@ import pytz, uuid, requests
 from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 from decimal import Decimal
-from .models import PostsData
+from .models import PostsData, ExtendedHabitationElementsData
 from django.core.mail import send_mail
 
 from plotly.offline import plot
@@ -17,7 +17,7 @@ sent = False
 esent = False
 
 def today():
-	return make_aware(datetime.now())
+	return make_aware(datetime.now()).date()
 
 def make_aware(time):
 	timezone = pytz.timezone('Asia/Kolkata')
@@ -25,54 +25,67 @@ def make_aware(time):
 
 def get_habitation_data():
 	print datetime.now()
-	data = {}
-	today_date = today().date()
+	data = []
 
-	for habitationElement in HabitationElementData.objects.all().exclude(habitation__latitude = Decimal(0)):
-		heid = habitationElement.habitation.id
-		try:
-			data[heid]
-			# print data[heid]['elements'][0]
-		except Exception as e:
-			data[heid] = {}
-			data[heid]['elements'] = []
-			data[heid]['alert_level'] = 0
-
-			habitation = habitationElement.habitation
-			village = habitation.village
-			panchayat = village.panchayat
-			block = panchayat.block
-			district = block.district
-			state = district.state
-			
-			data[heid]['hid'] = heid
-			data[heid]['address'] = "%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
-			data[heid]['latitude'] = habitation.latitude
-			data[heid]['longitude'] = habitation.longitude
-
+	for ehed in ExtendedHabitationElementsData.objects.filter(created = today()).exclude(habitation__latitude = Decimal(0)):
 		tmp = {}
-		alert_level = 0
-		if(habitationElement.count >= habitationElement.element.permissible_limit_low):
-			alert_level = 1
-		if(habitationElement.count >= habitationElement.element.permissible_limit_high):
-			alert_level = 2
 
-		if alert_level > data[heid]['alert_level']:
-			data[heid]['alert_level'] = alert_level
-		tmp['alert_level'] = alert_level
+		habitation = ehed.habitation
+		village = habitation.village
+		panchayat = village.panchayat
+		block = panchayat.block
+		district = block.district
+		state = district.state
 
-		tmp['name'] = habitationElement.element.name
-		tmp['count'] = habitationElement.count
-		tmp['limit'] = habitationElement.element.permissible_limit_high
-		data[heid]['elements'].append(tmp)
+		hid = habitation.id
+		tmp['hid'] = hid
+		tmp['latitude'] = ehed.latitude
+		tmp['longitude'] = ehed.longitude
+		tmp['alert_level'] = ehed.alert_level
 
-	print datetime.now()
-	final = []
-	for x,y in data.iteritems():
-		final.append(y)
-	print datetime.now()
-	print final[:2]
-	return final
+		tmp['address'] = "%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
+
+		tmp['elements'] = []
+		
+		element_f = {}
+		element_f['name'] = 'Fluoride'
+		element_f['limit'] = ehed.f_l
+		element_f['count'] = ehed.f_count
+		element_f['alert_level'] = ehed.f_al	
+		tmp['elements'].append(element_f)
+
+		element_fe = {}
+		element_fe['name'] = 'Iron'
+		element_fe['limit'] = ehed.fe_l
+		element_fe['count'] = ehed.fe_count
+		element_fe['alert_level'] = ehed.fe_al	
+		tmp['elements'].append(element_fe)
+
+		element_as = {}
+		element_as['name'] = 'Arsenic'
+		element_as['limit'] = ehed.as_l
+		element_as['count'] = ehed.as_count
+		element_as['alert_level'] = ehed.as_al	
+		tmp['elements'].append(element_as)
+
+		element_n = {}
+		element_n['name'] = 'Nitrate'
+		element_n['limit'] = ehed.n_l
+		element_n['count'] = ehed.n_count
+		element_n['alert_level'] = ehed.n_al	
+		tmp['elements'].append(element_n)
+
+		element_s = {}
+		element_s['name'] = 'Salinity'
+		element_s['limit'] = ehed.s_l
+		element_s['count'] = ehed.s_count
+		element_s['alert_level'] = ehed.s_al	
+		tmp['elements'].append(element_s)
+
+		data.append(tmp)
+
+	print data[:2]
+	return data
 
 template_1 = """<html><body><br><h3>Respected Sir/Ma'am</h3><br><h5><p>
 We would like it to bring it to your notice that the water constituents of handpump located at %s is currently unsafe for drinking. Kindly visit the <a href="%s">link</a> for more information.</p>
