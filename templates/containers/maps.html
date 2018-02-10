@@ -97,7 +97,7 @@
 				marker[counter-1] = new google.maps.Marker({
 					position: { lat : latit , lng : longi },
 					map : map,
-					label : String(counter),
+					// label : String(counter),
 				});
 				map.setCenter(marker[counter-1].getPosition());
 				google.maps.event.addListener(marker[counter-1],'click', 
