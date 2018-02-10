@@ -103,7 +103,7 @@ def populate(request):
 				remedy = element['remedy'],
 				permissible_limit_low = element['permissible_limit_low'],
 				permissible_limit_high = element['permissible_limit_high'])
-	# load(load_data())
+	load(load_data())
 
 	for habitation in HabitationData.objects.filter(latitude = Decimal(0)):
 		get_location(habitation)
