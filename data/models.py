@@ -17,7 +17,7 @@ class DistrictData(models.Model):
 		return str(self.name)
 
 	def save(self, *args, **kwargs):
-		address = "%s, %s"%(self.name, self.state.name)
+		self.address = "%s, %s"%(self.name, self.state.name)
 		super(DistrictData, self).save(*args, **kwargs)
 
 class BlockData(models.Model):
@@ -28,7 +28,7 @@ class BlockData(models.Model):
 		return str(self.name)
 
 	def save(self, *args, **kwargs):
-		address = "%s, %s"%(self.name, self.district.address)
+		self.address = "%s, %s"%(self.name, self.district.address)
 		super(BlockData, self).save(*args, **kwargs)
 
 class PanchayatData(models.Model):
@@ -39,7 +39,7 @@ class PanchayatData(models.Model):
 		return str(self.name)
 
 	def save(self, *args, **kwargs):
-		address = "%s, %s"%(self.name, self.block.address)
+		self.address = "%s, %s"%(self.name, self.block.address)
 		super(PanchayatData, self).save(*args, **kwargs)
 
 class VillageData(models.Model):
@@ -50,7 +50,7 @@ class VillageData(models.Model):
 		return str(self.name)
 
 	def save(self, *args, **kwargs):
-		address = "%s, %s"%(self.name, self.panchayat.address)
+		self.address = "%s, %s"%(self.name, self.panchayat.address)
 		super(VillageData, self).save(*args, **kwargs)
 
 class HabitationData(models.Model):
@@ -63,7 +63,7 @@ class HabitationData(models.Model):
 		return str(self.name)
 
 	def save(self, *args, **kwargs):
-		address = "%s, %s"%(self.name, self.village.address)
+		self.address = "%s, %s"%(self.name, self.village.address)
 		super(HabitationData, self).save(*args, **kwargs)
 
 class ElementData(models.Model):
