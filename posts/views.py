@@ -84,7 +84,8 @@ def get_habitation_data():
 
 		data.append(tmp)
 
-	print data[:2]
+	print datetime.now()
+	print data[:1]
 	return data
 
 template_1 = """<html><body><br><h3>Respected Sir/Ma'am</h3><br><h5><p>
