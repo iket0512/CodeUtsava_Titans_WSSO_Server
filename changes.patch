@@ -1,0 +1,91 @@
+diff --git a/db.sqlite3 b/db.sqlite3
+index be24429..6e8cd11 100644
+Binary files a/db.sqlite3 and b/db.sqlite3 differ
+diff --git a/notify/views.py b/notify/views.py
+index fb16bca..3acd98a 100644
+--- a/notify/views.py
++++ b/notify/views.py
+@@ -41,7 +41,7 @@ def sendMail(request):
+ 	    'Threat in HandPump',
+ 	    'Here is the message.',
+ 	    'iket.ag24@gmail.com',
+-	    email,
++	    email,c
+ 	    fail_silently=True,
+ 	    html_message=temp_html,
+ 	    )
+diff --git a/posts/views.py b/posts/views.py
+index db17953..6b0770a 100644
+--- a/posts/views.py
++++ b/posts/views.py
+@@ -7,6 +7,9 @@ from django.http import JsonResponse
+ from django.utils.dateparse import parse_datetime
+ from decimal import Decimal
+ from .models import PostsData
++from django.core.mail import send_mail
++
++sent = False
+ 
+ def today():
+ 	return make_aware(datetime.now())
+@@ -78,6 +81,10 @@ element_detail = """
+ 	</ul>
+ """
+ 
++sms = """Alert HandPump : %s
++Kindly look into the matter as soon as possible
++%s"""
++
+ def notify(post, habitation_json):
+ 	habitation = post.habitation
+ 	village = habitation.village
+@@ -97,9 +104,34 @@ def notify(post, habitation_json):
+ 			details = details + element_detail%(element['name'], element_obj.hazards, element_obj.remedy)
+ 
+ 	content_email = template_1%(habitation_json['address'], post.id, details)
++
++	if len(emails)!=0:
++		send_mail(
++		'HandPump Alert!!',
++		'Here is the message.',
++		'iket.ag24@gmail.com',
++		emails,
++		fail_silently=True,
++		html_message=content_email,
++		)
++
++	for mobile in mobiles:
++		authkey = '120246AD8NbKHar5912cd2b'
++		url = 'http://api.msg91.com/api/sendhttp.php?authkey=' + authkey + '&mobiles='
++        url += mobile
++        url += '&message=' + sms%(habitation.name, post.id) + '%0A'
++        url += '&sender=' + 'MYWSSO' + '&route=4'
++        print url
++        if(sent == False):
++        	print requests.request('GET', url)
++        sent = True
++
++
+ 	# sendmail(emails, content_email)
+ 	# sendsms(mobiles, content_sms)
+ 
++
++
+ def get_posts(request):
+ 	response = {}
+ 	response['data'] = []
+diff --git a/wsso_server/settings.py b/wsso_server/settings.py
+index f67aa08..39bbda5 100644
+--- a/wsso_server/settings.py
++++ b/wsso_server/settings.py
+@@ -132,3 +132,9 @@ STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static/"),
+    # '/var/www/static/',
+ ]
++
++EMAIL_HOST = 'smtp.gmail.com'
++EMAIL_HOST_USER = 'iket.ag24@gmail.com'
++EMAIL_HOST_PASSWORD = 'codeutsava'
++EMAIL_PORT = 587
++EMAIL_USE_TLS = True
+\ No newline at end of file

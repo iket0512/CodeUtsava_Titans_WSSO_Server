@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from models import *
 from django.http import JsonResponse
-from test_data import data_list2, element_data
+from test_data import load_data, element_data
 # Create your views here.
 from decimal import Decimal
 import requests, json, multiprocessing as mp
@@ -10,26 +10,32 @@ import pytz
 from django.utils.dateparse import parse_datetime
 import time
 
+from django import db
+
 SUCCESS = {
 	"success":True
 }
 
 
 def api_call(url, habitation):
+
 	response = requests.get(url)
 	# print response.status_code
 	data = json.loads(response.text)
 	if data['status'] != 'ZERO_RESULTS':
+		print data
 		location =  data['results'][0]['geometry']['location']
 		latitude = location['lat']
 		longitude = location['lng']
+		print latitude, longitude
 		habitation.latitude = latitude
 		habitation.longitude = longitude
 		habitation.save()
 		# print habitation, village
 
 def get_location(habitation):
-	key = 'AIzaSyCzLoN1PtGXixi9lw9dBk5AKoa1FkfiDlM'
+	# key = 'AIzaSyBiDPRoTGjbRV5j32_Gay-DpmecHMHOtlQ'
+	key = 'AIzaSyCSwSH0CtyyFGbnJ3id89GfKVYn9tNbPl4'
 	village = habitation.village
 	panchayat = village.panchayat
 	block = panchayat.block
@@ -41,11 +47,12 @@ def get_location(habitation):
 	url = 'https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s'
 	url = url%(address, key)
 	p = mp.Process(target = api_call, args = (url, habitation))
-	time.sleep(1)
+	time.sleep(.1)
+	db.connections.close_all()
 	p.start()
 
 def today():
-	return make_aware(datetime.now())
+	return make_aware(datetime.now()).date()
 
 def make_aware(time):
 	timezone = pytz.timezone('Asia/Kolkata')
@@ -73,12 +80,14 @@ def load(data_list):
 		# 	get_location(habitation)
 		# 	pass
 		
-		for element_this in ElementData.objects.all():
-			H,c = HabitationElementData.objects.get_or_create(habitation = habitation, element = element_this, created__date = today().date())
+		
+		if habitation_created:
+			for element_this in ElementData.objects.all():
+				H,c = HabitationElementData.objects.get_or_create(habitation = habitation, element = element_this, created= today())
 			# print H,c
 		print "xxxxxxxxxxxxxxxxx",element
 		element = ElementData.objects.get(name = element)
-		HE = HabitationElementData.objects.get(habitation = habitation, element = element, created__date = today().date())
+		HE = HabitationElementData.objects.get(habitation = habitation, element = element, created = today())
 		# print count
 		HE.count = count
 		HE.save()
@@ -86,15 +95,17 @@ def load(data_list):
 
 
 def populate(request):
-	for element in element_data:
-		ElementData.objects.get_or_create(name = element['name'],
-			hazards = element['hazards'],
-			remedy = element['remedy'],
-			permissible_limit_low = element['permissible_limit_low'],
-			permissible_limit_high = element['permissible_limit_high'])
-	load(data_list2)
+	# if(ElementData.objects.all().count() == 0):
+	# 	for element in element_data:
+	# 		print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
+	# 		ElementData.objects.get_or_create(name = element['name'],
+	# 			hazards = element['hazards'],
+	# 			remedy = element['remedy'],
+	# 			permissible_limit_low = element['permissible_limit_low'],
+	# 			permissible_limit_high = element['permissible_limit_high'])
+	# load(load_data())
 
-	for habitation in HabitationData.objects.all():
+	for habitation in HabitationData.objects.filter(latitude = Decimal(0)):
 		get_location(habitation)
 
 	return JsonResponse(SUCCESS)

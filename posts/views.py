@@ -6,65 +6,87 @@ import pytz, uuid, requests
 from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 from decimal import Decimal
-from .models import PostsData
+from .models import PostsData, ExtendedHabitationElementsData
 from django.core.mail import send_mail
 
 from plotly.offline import plot
 from plotly.graph_objs import Bar, Scatter, Figure, Layout
+from datetime import datetime
 
 sent = False
 esent = False
 
 def today():
-	return make_aware(datetime.now())
+	return make_aware(datetime.now()).date()
 
 def make_aware(time):
 	timezone = pytz.timezone('Asia/Kolkata')
 	return timezone.localize(time)
 
 def get_habitation_data():
+	print datetime.now()
 	data = []
-	today_date = today().date()
-	for habitation in HabitationData.objects.all():
+
+	for ehed in ExtendedHabitationElementsData.objects.filter(created = today()).exclude(habitation__latitude = Decimal(0)):
 		tmp = {}
+
+		habitation = ehed.habitation
+		# village = habitation.village
+		# panchayat = village.panchayat
+		# block = panchayat.block
+		# district = block.district
+		# state = district.state
+
+		hid = habitation.id
+		tmp['hid'] = hid
+		tmp['latitude'] = ehed.latitude
+		tmp['longitude'] = ehed.longitude
+		tmp['alert_level'] = ehed.alert_level
+
+		tmp['address'] = habitation.address#"%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
+
 		tmp['elements'] = []
-		tmp['alert_level'] = 0
-		for element in ElementData.objects.all():
-			tmp_tmp = {}
-			print "thisthis", today_date
-			print habitation.name, habitation.village.name, habitation.village.panchayat.name, habitation.village.panchayat.block.name, habitation.village.panchayat.block.district.name
-			print element
-			habitationElement = HabitationElementData.objects.get(habitation = habitation,
-				element = element)
-			tmp_tmp['name'] = element.name
-			tmp_tmp['count'] = habitationElement.count
-			tmp_tmp['limit'] = element.permissible_limit_high
-			alert_level = 0
-			if(habitationElement.count >= element.permissible_limit_low):
-				alert_level = 1
-			if(habitationElement.count >= element.permissible_limit_high):
-				alert_level = 2
+		
+		element_f = {}
+		element_f['name'] = 'Fluoride'
+		element_f['limit'] = ehed.f_l
+		element_f['count'] = ehed.f_count
+		element_f['alert_level'] = ehed.f_al	
+		tmp['elements'].append(element_f)
 
-			if alert_level > tmp['alert_level']:
-				tmp['alert_level'] = alert_level
+		element_fe = {}
+		element_fe['name'] = 'Iron'
+		element_fe['limit'] = ehed.fe_l
+		element_fe['count'] = ehed.fe_count
+		element_fe['alert_level'] = ehed.fe_al	
+		tmp['elements'].append(element_fe)
 
-			tmp_tmp['alert_level'] = alert_level
-			# tmp_tmp['hazards'] = element.hazards
-			# tmp_tmp['remedy'] = element.remedy
-			tmp['elements'].append(tmp_tmp)
+		element_as = {}
+		element_as['name'] = 'Arsenic'
+		element_as['limit'] = ehed.as_l
+		element_as['count'] = ehed.as_count
+		element_as['alert_level'] = ehed.as_al	
+		tmp['elements'].append(element_as)
 
-		village = habitation.village
-		panchayat = village.panchayat
-		block = panchayat.block
-		district = block.district
-		state = district.state
-		tmp['hid'] = habitation.id
-		tmp['address'] = "%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
-		tmp['latitude'] = habitation.latitude
-		tmp['longitude'] = habitation.longitude
+		element_n = {}
+		element_n['name'] = 'Nitrate'
+		element_n['limit'] = ehed.n_l
+		element_n['count'] = ehed.n_count
+		element_n['alert_level'] = ehed.n_al	
+		tmp['elements'].append(element_n)
+
+		element_s = {}
+		element_s['name'] = 'Salinity'
+		element_s['limit'] = ehed.s_l
+		element_s['count'] = ehed.s_count
+		element_s['alert_level'] = ehed.s_al	
+		tmp['elements'].append(element_s)
+
 		data.append(tmp)
 
-	return data	
+	print datetime.now()
+	print data[:1]
+	return data
 
 template_1 = """<html><body><br><h3>Respected Sir/Ma'am</h3><br><h5><p>
 We would like it to bring it to your notice that the water constituents of handpump located at %s is currently unsafe for drinking. Kindly visit the <a href="%s">link</a> for more information.</p>
@@ -249,7 +271,7 @@ def get_habitation(request, id):
 	response['Sg'] = plot([Scatter(x=Sx, y=Sy)],auto_open=False,output_type='div')
 	response['Ng'] = plot([Scatter(x=Nx, y=Ny)],auto_open=False,output_type='div')
 
-	print response
+	# print response
 
 	context ={
 		"data" :response
@@ -264,19 +286,3 @@ def get_mobileposts(request):
 
 	print "zzxx", response
 	return JsonResponse(response)
-
-
-def get_hazards_remedies(request):
-	response=[]
-	element_obj = ElementData.objects.all()
-	for element in element_obj:
-		temp={}
-		temp['name']= element.name
-		temp['hazards'] = element.hazards
-		temp['remedies'] = element.remedy
-		response.append(temp)
-	context={
-		"data" :response
-	}
-
-	return render(request,"containers/hazards_remedies.html",context)

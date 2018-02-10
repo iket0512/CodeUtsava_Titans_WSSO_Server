@@ -1,5 +1,6 @@
 
 """wsso_server URL Configuration
+
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
 Examples:
@@ -21,20 +22,20 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from data.views import populate
-from posts.views import pointers, test, test_map, trigger_post,get_posts, get_post_id, get_habitation,get_mobileposts,get_hazards_remedies
+from posts.views import pointers, test, test_map, trigger_post,get_posts, get_post_id, get_habitation,get_mobileposts
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # url(r'^home/', test),
     url(r'^map/', test_map),
-    url(r'^populate/', populate),
+    # url(r'^populate/', populate),
     url(r'^pointers/', pointers),
-    url(r'^trigger_post/', trigger_post),
+    # url(r'^trigger_post/', trigger_post),
     url(r'^home/', get_posts),
     url(r'^post/(?P<id>\w+)/', get_post_id),
     url(r'^habitation/(?P<id>\w+)/', get_habitation),
-    url(r'^get_mobileposts/', get_mobileposts),
-    url(r'^hazards_remedies/', get_hazards_remedies)
+    url(r'^get_mobileposts/', get_mobileposts)
+
 ]
 
 
