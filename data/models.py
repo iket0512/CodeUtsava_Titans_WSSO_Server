@@ -18,7 +18,7 @@ class DistrictData(models.Model):
 
 	def save(self, *args, **kwargs):
 		address = "%s, %s"%(self.name, self.state.name)
-		super().save(*args, **kwargs)
+		super(DistrictData, self).save(*args, **kwargs)
 
 class BlockData(models.Model):
 	name = models.CharField(max_length = 254)
@@ -29,7 +29,7 @@ class BlockData(models.Model):
 
 	def save(self, *args, **kwargs):
 		address = "%s, %s"%(self.name, self.district.address)
-		super().save(*args, **kwargs)
+		super(BlockData, self).save(*args, **kwargs)
 
 class PanchayatData(models.Model):
 	name = models.CharField(max_length = 254)
@@ -40,7 +40,7 @@ class PanchayatData(models.Model):
 
 	def save(self, *args, **kwargs):
 		address = "%s, %s"%(self.name, self.block.address)
-		super().save(*args, **kwargs)
+		super(PanchayatData, self).save(*args, **kwargs)
 
 class VillageData(models.Model):
 	name = models.CharField(max_length = 254)
@@ -51,7 +51,7 @@ class VillageData(models.Model):
 
 	def save(self, *args, **kwargs):
 		address = "%s, %s"%(self.name, self.panchayat.address)
-		super().save(*args, **kwargs)
+		super(VillageData, self).save(*args, **kwargs)
 
 class HabitationData(models.Model):
 	name = models.CharField(max_length = 254)
@@ -64,7 +64,7 @@ class HabitationData(models.Model):
 
 	def save(self, *args, **kwargs):
 		address = "%s, %s"%(self.name, self.village.address)
-		super().save(*args, **kwargs)
+		super(HabitationData, self).save(*args, **kwargs)
 
 class ElementData(models.Model):
 	name = models.CharField(max_length = 255)
