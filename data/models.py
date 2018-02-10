@@ -11,35 +11,60 @@ class StateData(models.Model):
 
 class DistrictData(models.Model):
 	name = models.CharField(max_length = 254)
+	address = models.CharField(max_length = 2000)
 	state = models.ForeignKey(StateData)
 	def __unicode__(self):
 		return str(self.name)
 
+	def save(self, *args, **kwargs):
+		address = "%s, %s"%(self.name, self.state.name)
+		super().save(*args, **kwargs)
+
 class BlockData(models.Model):
 	name = models.CharField(max_length = 254)
 	district = models.ForeignKey(DistrictData)
+	address = models.CharField(max_length = 2000)
 	def __unicode__(self):
 		return str(self.name)
+
+	def save(self, *args, **kwargs):
+		address = "%s, %s"%(self.name, self.district.address)
+		super().save(*args, **kwargs)
 
 class PanchayatData(models.Model):
 	name = models.CharField(max_length = 254)
 	block = models.ForeignKey(BlockData)
+	address = models.CharField(max_length = 2000)
 	def __unicode__(self):
 		return str(self.name)
+
+	def save(self, *args, **kwargs):
+		address = "%s, %s"%(self.name, self.block.address)
+		super().save(*args, **kwargs)
 
 class VillageData(models.Model):
 	name = models.CharField(max_length = 254)
 	panchayat = models.ForeignKey(PanchayatData)
+	address = models.CharField(max_length = 2000)
 	def __unicode__(self):
 		return str(self.name)
+
+	def save(self, *args, **kwargs):
+		address = "%s, %s"%(self.name, self.panchayat.address)
+		super().save(*args, **kwargs)
 
 class HabitationData(models.Model):
 	name = models.CharField(max_length = 254)
 	village = models.ForeignKey(VillageData)
 	latitude = models.DecimalField(max_digits = 15, decimal_places = 8, default = 0)
 	longitude = models.DecimalField(max_digits = 15, decimal_places = 8, default = 0)
+	address = models.CharField(max_length = 2000)
 	def __unicode__(self):
 		return str(self.name)
+
+	def save(self, *args, **kwargs):
+		address = "%s, %s"%(self.name, self.village.address)
+		super().save(*args, **kwargs)
 
 class ElementData(models.Model):
 	name = models.CharField(max_length = 255)

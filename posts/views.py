@@ -31,11 +31,11 @@ def get_habitation_data():
 		tmp = {}
 
 		habitation = ehed.habitation
-		village = habitation.village
-		panchayat = village.panchayat
-		block = panchayat.block
-		district = block.district
-		state = district.state
+		# village = habitation.village
+		# panchayat = village.panchayat
+		# block = panchayat.block
+		# district = block.district
+		# state = district.state
 
 		hid = habitation.id
 		tmp['hid'] = hid
@@ -43,7 +43,7 @@ def get_habitation_data():
 		tmp['longitude'] = ehed.longitude
 		tmp['alert_level'] = ehed.alert_level
 
-		tmp['address'] = "%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
+		tmp['address'] = habitation.address#"%s, %s, %s, %s, %s, %s"%(habitation.name, village.name, panchayat.name, block.name, district.name, state.name)
 
 		tmp['elements'] = []
 		
