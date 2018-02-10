@@ -1,5 +1,5 @@
-"""wsso_server URL Configuration
 
+"""wsso_server URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
 Examples:
@@ -14,23 +14,27 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf import settings			
+from django.conf import settings            
 from django.conf.urls.static import static
 
 from django.conf.urls import url
 from django.contrib import admin
 
 from data.views import populate
-from posts.views import pointers, test, test_map, trigger_post,get_posts
+from posts.views import pointers, test, test_map, trigger_post,get_posts, get_post_id, get_habitation,get_mobileposts,get_hazards_remedies
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^home/', test),
+    # url(r'^home/', test),
     url(r'^map/', test_map),
     url(r'^populate/', populate),
     url(r'^pointers/', pointers),
     url(r'^trigger_post/', trigger_post),
-    url(r'^get_posts/', get_posts),
+    url(r'^home/', get_posts),
+    url(r'^post/(?P<id>\w+)/', get_post_id),
+    url(r'^habitation/(?P<id>\w+)/', get_habitation),
+    url(r'^get_mobileposts/', get_mobileposts),
+    url(r'^hazards_remedies/', get_hazards_remedies)
 ]
 
 

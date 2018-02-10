@@ -1,0 +1,35 @@
+<div class="row" style="top: 100px">
+	<div class="col s12 m10 l9">
+		<div class="card">
+			<div class="card-move-up">
+				<div class="card-title center" style="padding-top: 10px">
+					<h4>Hazards & Remedies</h4> 
+				</div>
+				<br>
+				<div class="divider"></div>
+				<br>
+				<div class="card-content">
+					<ul>
+					{% for element in data %}
+						<li><h4 class="card-title"><b>{{element.name}}</b></h4>
+							<ul>
+								<li class="card-title">
+									Hazards:<br> 
+								</li>
+									<p align="justify">{{element.hazards}}</p>
+								<li class="card-title">
+									Remedies:<br> 
+								</li>
+									<p align="justify">{{element.remedies}}</p>
+							</ul>
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
+				<br>
+				<div class="divider"></div>
+				<br>
+			</div>
+		</div>
+	</div>
+</div>

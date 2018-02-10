@@ -29,11 +29,16 @@
 		</script>
 		<style>
 			#map {
-			height: 600px;
-			width: 99%;
+			height:90%;
 			top: 5px;
-			margin: 5px;
 			}
+			html, body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				overflow-y: hidden;
+			}
+
 		</style>
 	</head>
 
@@ -51,82 +56,72 @@
 	<!-- END HEADER -->
 
 	<!-- START MAIN -->
-	<div id="map" style="width: 100%"></div>
+	{%include "elements/sidebar.html"%}
+	<div id="map"></div>
 	<script>
-		function initMap() {
-			var m1 = {lat: 21.2514, lng: 81.6296};
-			var m2 = {lat: 23.259933, lng: 77.412613};
-			var m3 = {lat: 21.1458, lng: 79.0882};
-			var m4 = {lat: 21.1938, lng: 81.3509};
-			var m5 = {lat: 34.083656, lng: 74.797371};
+		function initMap() {		
+			var marker_arr;
+			// console.log(marker_arr.latitude);
 
-			var marker_arr=[
-				{lat: 21.1081243, lng: 81.9507538},
-				{lat: 21.0257166, lng: 81.8360977},
-				{lat: 21.2277586, lng: 81.91528439999999},
-				{lat: 21.0257166, lng: 81.8360977},
-				{lat: 21.1448138, lng: 81.9814833},
-				{lat: 21.236382, lng: 81.647196},
-				{lat: 21.1567393, lng: 81.91528439999999},
-				{lat: 20.7394234, lng: 81.8497567},
-				{lat: 21.4077001, lng: 81.99574779999999},
-				{lat: 21.426837, lng: 82.0713561},
-				{lat: 21.426837, lng: 82.0713561},
-				{lat: 21.3084948, lng: 81.6270471},
-				{lat: 21.1448138, lng: 81.9814833},
-				{lat: 21.0193598, lng: 81.70484189999999},
-				{lat: 21.3425744, lng: 82.1523251},
-				{lat: 21.1449288, lng: 81.7322061},
-				{lat: 21.1448138, lng: 81.9814833},
-				{lat: 21.5061112, lng: 81.7376778},
-			];
-			var lat_center,long_center;
+			var lat_center,long_center,i;
 			lat_center=long_center=0;
-			for (i in marker_arr) {
-				lat_center=lat_center + marker_arr[i].lat;
-				long_center=long_center + marker_arr[i].lng;
-			}
+			var content=[];
+			{%for list in data %}
+				lat_center = lat_center + {{list.latitude}};
+				long_center = long_center+ {{list.longitude}};
+				content[{{forloop.counter}}]= {%include "elements/marker.html"%};
+				i={{forloop.counter}};
+			{% endfor %}
+			lat_center=lat_center/i;
+			long_center=long_center/i;
+			// console.log(lat_center,long_center,i);
 
-			lat_center=lat_center/marker_arr.length;
-			long_center=long_center/marker_arr.length;
-			
 			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 10,
+				zoom: 9,
 				center: {lat: lat_center, lng: long_center},
 			});
 
-			var contentString = {%include "elements/marker.html"%};
-
+			// var contentString = {%include "elements/marker.html"%};
 			var marker=[] ;
-			
 			var infowindow = new google.maps.InfoWindow();
 
-			for (var i = 0; i < marker_arr.length; i++) {
+			{%for item in data %}
+			var counter = {{forloop.counter}}; 
+				var contentString = content[counter];
+				// console.log({{ item.latitude }},{{ item.longitude }},counter);
 				infowindow.close();
-				marker = new google.maps.Marker({
-					position: marker_arr[i],
-					map: map,
-					title:''
-				});
-				map.setCenter(marker.getPosition())
 
-				google.maps.event.addListener(marker,'click', 
+				var latit = {{ item.latitude }} + (Math.random() -.5) / 1500;
+				var longi = {{ item.longitude }} + (Math.random() -.5) / 1500;
+
+				marker[counter-1] = new google.maps.Marker({
+					position: { lat : latit , lng : longi },
+					map : map,
+					label : String(counter),
+				});
+				map.setCenter(marker[counter-1].getPosition());
+				google.maps.event.addListener(marker[counter-1],'click', 
 					(function(marker,contentString,infowindow){ 
 					return function() {
+					console.log({{ item.latitude }},{{ item.longitude }},{{forloop.counter}});
 					infowindow.setContent(contentString);
 					infowindow.open(map,marker);
 					};
-				})(marker,contentString,infowindow)); 
-			}
+				})(marker[counter-1],contentString,infowindow)); 
+			{% endfor %}
+
+			var markerCluster = new MarkerClusterer(map, marker, {imagePath: 
+				'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+			// console.log(marker);
 		}
 	</script>
+
 	<!--Import jQuery before materialize.js-->
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
 	<script async defer
 	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiDPRoTGjbRV5j32_Gay-DpmecHMHOtlQ &callback=initMap">
 	</script>
 
 	</body>
-
-
-
 </html>

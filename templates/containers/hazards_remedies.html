@@ -47,11 +47,9 @@
 		<div id="main">
 			<div class="wrapper">
 				{%include "elements/sidebar.html"%}
-				<section id="content"   style="margin-top: -5px; overflow:hidden;">
+				<section id="content"   style="padding: 5px;margin-top: 25px; overflow:hidden;">
 					<div class="container" id="main_container" style="width: 100%">
-						{% for item in data%}
-							{%include "containers/item_post.html"%}
-						{% endfor %}
+							{%include "elements/text_hazard_remedies.html"%}
 					</div>
 				</section>	
 			</div>
@@ -60,7 +58,4 @@
 		<!--Import jQuery before materialize.js-->
 
 	</body>
-
-
-
 </html>
