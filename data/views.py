@@ -81,9 +81,9 @@ def load(data_list):
 		# 	pass
 		
 		
-		if habitation_created:
-			for element_this in ElementData.objects.all():
-				H,c = HabitationElementData.objects.get_or_create(habitation = habitation, element = element_this, created= today())
+		#if habitation_created:
+		for element_this in ElementData.objects.all():
+			H,c = HabitationElementData.objects.get_or_create(habitation = habitation, element = element_this, created= today())
 			# print H,c
 		print "xxxxxxxxxxxxxxxxx",element
 		element = ElementData.objects.get(name = element)
@@ -95,14 +95,14 @@ def load(data_list):
 
 
 def populate(request):
-	if(ElementData.objects.all().count() == 0):
-		for element in element_data:
-			print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
-			ElementData.objects.get_or_create(name = element['name'],
-				hazards = element['hazards'],
-				remedy = element['remedy'],
-				permissible_limit_low = element['permissible_limit_low'],
-				permissible_limit_high = element['permissible_limit_high'])
+	#if(ElementData.objects.all().count() == 0):
+	#	for element in element_data:
+	#		print "\n\n\n..",element['permissible_limit_high'],"\n\n\n\n."
+	#		ElementData.objects.get_or_create(name = element['name'],
+	#			hazards = element['hazards'],
+	#			remedy = element['remedy'],
+	##			permissible_limit_low = element['permissible_limit_low'],
+	#			permissible_limit_high = element['permissible_limit_high'])
 	load(load_data())
 
 	for habitation in HabitationData.objects.filter(latitude = Decimal(0)):
