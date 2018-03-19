@@ -27,7 +27,7 @@ def get_habitation_data():
 	print datetime.now()
 	data = []
 
-	for ehed in ExtendedHabitationElementsData.objects.filter(created = today()).exclude(habitation__latitude = Decimal(0)):
+	for ehed in ExtendedHabitationElementsData.objects.all().exclude(habitation__latitude = Decimal(0)):
 		tmp = {}
 
 		habitation = ehed.habitation
@@ -115,11 +115,11 @@ def notify(post, habitation_json):
 	village = habitation.village
 	panchayat = village.panchayat
 	block = panchayat.block
-	emails = []
-	mobiles = []
-	for official in Officials.objects.filter(block = block):
-		emails.append(official.email)
-		mobiles.append(official.mobile)
+	emails = ['abajpai743.AB@gmail.com']
+	mobiles = ['7693844850', '9425222595']
+	# for official in 0Officials.objects.filter(block = block):
+	# 	emails.append(official.email)
+	# 	mobiles.append(official.mobile)
 
 	details = ''
 
@@ -137,7 +137,7 @@ def notify(post, habitation_json):
 		global esent
 		if esent == False:
 			send_mail('HandPump Alert!!','Here is the message.','iket.ag24@gmail.com',[emails],fail_silently=True,html_message=content_email)
-			esent = True
+			# esent = True
 			print "sent"
 
 	for mobile in mobiles:
@@ -152,7 +152,8 @@ def notify(post, habitation_json):
 		global sent
 		if(sent == False):
 			print requests.request('GET', url_sms)
-			sent = True
+			# sent = True
+			pass
 
 
 	# sendmail(emails, content_email)
@@ -187,7 +188,12 @@ def trigger_post(request):
 				habitation = habitation_obj)
 		notify(post, habitation)
 
-
+def hardcoded(request):
+	habitation_data = get_habitation_data()
+	habitation = habitation_data[0]
+	post = PostsData.objects.all()[0]
+	notify(post, habitation)
+	return JsonResponse({'success':True, 'message':'notified'})
 
 def pointers(request):
 	response = {}

@@ -143,6 +143,6 @@ STATICFILES_DIRS = [
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'iket.ag24@gmail.com'
-EMAIL_HOST_PASSWORD = 'codeutsava'
+EMAIL_HOST_PASSWORD = 'codeutsava1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
