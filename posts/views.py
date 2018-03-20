@@ -128,7 +128,7 @@ def notify(post, habitation_json):
 			element_obj = ElementData.objects.get(name = element['name'])
 			details = details + element_detail%(element['name'], element_obj.hazards, element_obj.remedy)
 
-	link = "http://172.16.20.190:8000/post/" + str(post.id)
+	link = "http://18.217.170.19:8000/post/" + str(post.id)
 	content_email = template_1%(habitation_json['address'], link, details)
 
 	if len(emails) > 0:
